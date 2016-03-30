@@ -1,25 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
-
 import sys
 
 from itertools import product
 
 
 def nos_to_decimal(nos):
-    assert isinstance(nos, basestring)
+    assert isinstance(nos, str)
     n = len(nos)
     result = 0
-    for i in xrange(1, n+1):
-        c = nos[i-1]
+    for i in range(n):
+        c = nos[i]
         if c == "0":
-            result += i
+            result += i + 1
         elif c == "1":
-            result -= i
+            result -= i + 1
         elif c == "2":
-            result *= i
+            result *= i + 1
         else:
             raise RuntimeError(
                 "Unknown char: {}. Expected 0, 1, or 2.".format(c))
@@ -38,17 +36,32 @@ def decimal_to_nos(num):
                 valid.append(combo)
         i += 1
 
-    return min(valid, key=lambda x: -x.count("0"))
+    return max(valid, key=lambda x: x.count("0"))
+
+
+def compress_file(filename):
+    pass
+
+
+def get_args():
+    from argparse import ArgumentParser
+    parser = ArgumentParser()
+
+    parser.add_argument("input", type=str)
+    parser.add_argument("--nos", action="store_true", default=False)
+    parser.add_argument("--compress", action="store_true", default=False)
+    parser.add_argument("--decompress", action="store_true", default=False)
+
+    return parser.parse_args()
 
 
 def main():
-    input_ = sys.argv[1]
-    find_nos = len(sys.argv) > 2
+    args = get_args()
 
-    if find_nos:
-        print(decimal_to_nos(int(input_)))
+    if args.nos:
+        print(decimal_to_nos(int(args.input)))
     else:
-        print(nos_to_decimal(input_))
+        print(nos_to_decimal(args.input))
 
     return 0
 
